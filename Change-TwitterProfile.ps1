@@ -55,7 +55,6 @@ function Change-TwitterProfile {
 
         $OAuthSettings = Get-TwitterOAuthSettings -Resource $Resource
         Invoke-TwitterAPI -Method $Method -ResourceUrl $ResourceUrl -Parameters $Parameters -OAuthSettings $OAuthSettings | Out-Null
-        cls
         Write-Host "Name set to: " -ForegroundColor Green -BackgroundColor Black -NoNewline
         Write-Host "$($Parameters.name)" -ForegroundColor Yellow -BackgroundColor Black
         Write-Host "Description set to: " -ForegroundColor Green -BackgroundColor Black -NoNewline
