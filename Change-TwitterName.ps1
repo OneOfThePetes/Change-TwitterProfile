@@ -30,7 +30,7 @@ $OAuthSettings = @{
 }
 Set-TwitterOAuthSettings @OAuthSettings -WarningAction SilentlyContinue
 
-function Xoge-ProfileRename {
+function Change-TwitterName {
     [CmdletBinding()]
     Param(
         [string]$name
@@ -74,6 +74,6 @@ while ($true) {
         $NameSuffix =  (Get-Content -Path ".\names\Suffix.txt") | Get-Random
     }
 
-    Xoge-ProfileRename "$($NamePrefix) - $($NameSuffix)"
+    Change-TwitterName "$($NamePrefix) - $($NameSuffix)"
     Start-Sleep -Seconds 30
 } 
