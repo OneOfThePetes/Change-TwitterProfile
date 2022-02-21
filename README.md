@@ -1,7 +1,8 @@
 Change-TwitterName
 
-This PowerShell script currently updates your Twitter name every 30 seconds.
-The following format is applied:
+This PowerShell script currently updates your Twitter name and description every 30 seconds.
+
+The following name format is applied:
 
 Prefix - Suffix
 
