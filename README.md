@@ -5,7 +5,7 @@ The following format is applied:
 
 Prefix - Suffix
 
-The prefix is hard set, and the suffix is randomly pulled from a text file of possible options.
+The prefix and the suffix are randomly pulled from 2 text files of possible options.
 
 Uses the awesome PSTwitterAPI PowerShell Module: https://github.com/mkellerman/PSTwitterAPI by mkellerman (https://twitter.com/mkellerman). 
 
