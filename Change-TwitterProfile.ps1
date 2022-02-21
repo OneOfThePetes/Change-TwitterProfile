@@ -30,10 +30,11 @@ $OAuthSettings = @{
 }
 Set-TwitterOAuthSettings @OAuthSettings -WarningAction SilentlyContinue
 
-function Change-TwitterName {
+function Change-TwitterProfile {
     [CmdletBinding()]
     Param(
-        [string]$name
+        [string]$name,
+        [string]$description
     )
     Begin {
 
@@ -62,8 +63,9 @@ function Change-TwitterName {
 }
 
 while ($true) {
+    #Set name
     $NamePrefix = (Get-Content -Path ".\names\Prefix.txt")
-    $NameSuffix =  (Get-Content -Path ".\names\Suffix.txt")
+    $NameSuffix = (Get-Content -Path ".\names\Suffix.txt")
 
     if ($NamePrefix.Count -gt 1)
     {
@@ -73,7 +75,19 @@ while ($true) {
     {
         $NameSuffix =  (Get-Content -Path ".\names\Suffix.txt") | Get-Random
     }
+    $Name = "$($NamePrefix) - $($NameSuffix)"
 
-    Change-TwitterName "$($NamePrefix) - $($NameSuffix)"
+    #Set description
+    $Description = (Get-Content -Path ".\names\Description.txt")
+    if ($Description.Count -gt 1)
+    {
+        $Description = (Get-Content -Path ".\names\Description.txt" | Get-Random)
+    }
+    elseif (!($Description))
+    {
+        $Description = ""
+    }
+
+    Change-TwitterProfile -name $Name -description $Description
     Start-Sleep -Seconds 30
 } 
