@@ -1,4 +1,4 @@
-Change-TwitterName
+Change-TwitterProfile
 
 This PowerShell script currently updates your Twitter name and description every 30 seconds.
 
