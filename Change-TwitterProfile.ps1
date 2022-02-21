@@ -55,7 +55,12 @@ function Change-TwitterProfile {
 
         $OAuthSettings = Get-TwitterOAuthSettings -Resource $Resource
         Invoke-TwitterAPI -Method $Method -ResourceUrl $ResourceUrl -Parameters $Parameters -OAuthSettings $OAuthSettings | Out-Null
-        $Parameters.Values
+        cls
+        Write-Host "Name set to: " -ForegroundColor Green -BackgroundColor Black -NoNewline
+        Write-Host "$($Parameters.name)" -ForegroundColor Yellow -BackgroundColor Black
+        Write-Host "Description set to: " -ForegroundColor Green -BackgroundColor Black -NoNewline
+        Write-Host "$($Parameters.description)" -ForegroundColor Yellow -BackgroundColor Black
+        Write-Host "Waiting 30 seconds..." -ForegroundColor Red -BackgroundColor Black
     }
     End {
 
@@ -91,3 +96,4 @@ while ($true) {
     Change-TwitterProfile -name $Name -description $Description
     Start-Sleep -Seconds 30
 } 
+
