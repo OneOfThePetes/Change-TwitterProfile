@@ -1,25 +1,36 @@
 Remove-Variable *
 cls
 
-# Change-TwitterName
-# A PowerShell script to update your Twitter Name every 30 seconds
-# Uses the awesome PSTwitterAPI PowerShell Module: https://github.com/mkellerman/PSTwitterAPI
-
 if (!(Get-Module PSTwitterAPI))
 {
-    Install-Module PSTwitterAPI
-    Import-Module PSTwitterAPI
+    try
+    {
+        Import-Module PSTwitterAPI -ErrorAction SilentlyContinue
+    }
+    catch
+    {
+        if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] 'Administrator')) 
+        {
+            if ([int](Get-CimInstance -Class Win32_OperatingSystem | Select-Object -ExpandProperty BuildNumber) -ge 6000) 
+            {
+                $CommandLine = "Install-Module PSTwitterAPI -Force"
+                Start-Process -FilePath PowerShell.exe -Verb Runas -ArgumentList $CommandLine
+                Break
+            }
+        } 
+        Import-Module PSTwitterAPI 
+    }  
 }
 
 $OAuthSettings = @{
-  ApiKey = "YOU NEED TO CREATE THIS"
-  ApiSecret = "YOU NEED TO CREATE THIS"
-  AccessToken = "YOU NEED TO CREATE THIS"
-  AccessTokenSecret = "YOU NEED TO CREATE THIS"
-} #Don't show this bit ;)
+  ApiKey = (Get-Content -Path ".\creds\ApiKey.txt")
+  ApiSecret = (Get-Content -Path ".\creds\ApiSecret.txt")
+  AccessToken = (Get-Content -Path ".\creds\AccessToken.txt")
+  AccessTokenSecret = (Get-Content -Path ".\creds\AccessTokenSecret.txt")
+}
 Set-TwitterOAuthSettings @OAuthSettings -WarningAction SilentlyContinue
 
-function Change-TwitterName {
+function Xoge-ProfileRename {
     [CmdletBinding()]
     Param(
         [string]$name
@@ -51,9 +62,18 @@ function Change-TwitterName {
 }
 
 while ($true) {
-    $NamePrefix = "YOUR USERNAME HERE"
-    $NameSuffix =  (Get-Content -Path .\NameChangeNames.txt) | Get-Random
+    $NamePrefix = (Get-Content -Path ".\names\Prefix.txt")
+    $NameSuffix =  (Get-Content -Path ".\names\Suffix.txt")
 
-    Change-TwitterName "$($NamePrefix) - $($NameSuffix)"
-    Start-Sleep -Seconds 30  
+    if ($NamePrefix.Count -gt 1)
+    {
+        $NamePrefix = (Get-Content -Path ".\names\Prefix.txt") | Get-Random
+    }
+    if ($NameSuffix.Count -gt 1)
+    {
+        $NameSuffix =  (Get-Content -Path ".\names\Suffix.txt") | Get-Random
+    }
+
+    Xoge-ProfileRename "$($NamePrefix) - $($NameSuffix)"
+    Start-Sleep -Seconds 3 
 } 
