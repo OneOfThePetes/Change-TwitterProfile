@@ -18,5 +18,3 @@ Twitter Access Token
 Twitter Access Token Secret
 
 Uses the awesome PSTwitterAPI PowerShell Module: https://github.com/mkellerman/PSTwitterAPI by mkellerman (https://twitter.com/mkellerman). 
-
-Coming soon - update profile image and banner options! :)
