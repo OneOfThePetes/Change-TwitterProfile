@@ -75,5 +75,5 @@ while ($true) {
     }
 
     Xoge-ProfileRename "$($NamePrefix) - $($NameSuffix)"
-    Start-Sleep -Seconds 3 
+    Start-Sleep -Seconds 30
 } 
