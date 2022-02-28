@@ -1,27 +1,4 @@
 #region functions collapse
-Remove-Variable *
-cls
-
-if (!(Get-Module PSTwitterAPI))
-{
-    try
-    {
-        Import-Module PSTwitterAPI -ErrorAction SilentlyContinue
-    }
-    catch
-    {
-        if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] 'Administrator')) 
-        {
-            if ([int](Get-CimInstance -Class Win32_OperatingSystem | Select-Object -ExpandProperty BuildNumber) -ge 6000) 
-            {
-                $CommandLine = "Install-Module PSTwitterAPI -Force"
-                Start-Process -FilePath PowerShell.exe -Verb Runas -ArgumentList $CommandLine
-                Break
-            }
-        } 
-        Import-Module PSTwitterAPI 
-    }  
-}
 $OAuthSettings = @{
   ApiKey = (Get-Content -Path ".\creds\ApiKey.txt")
   ApiSecret = (Get-Content -Path ".\creds\ApiSecret.txt")
