@@ -1,4 +1,11 @@
 #region functions collapse
+$WinVer = (Get-WMIObject win32_operatingsystem).version
+if ([int]$WinVer.Split(".")[0] -lt 10)
+{
+    $TLS12Protocol = [System.Net.SecurityProtocolType] 'Ssl3 , Tls12' 
+    [System.Net.ServicePointManager]::SecurityProtocol = $TLS12Protocol
+}
+
 $OAuthSettings = @{
   ApiKey = (Get-Content -Path ".\creds\ApiKey.txt")
   ApiSecret = (Get-Content -Path ".\creds\ApiSecret.txt")
@@ -183,7 +190,7 @@ Function Set-TwitterProfileName
     } | Out-Null
 
     Write-Host "Name set to: " -ForegroundColor Yellow -BackgroundColor Black -NoNewline
-    Write-Host $Name -ForegroundColor Green -BackgroundColor Black
+    Write-Host $Name -ForegroundColor Green -BackgroundColor Black 
 }
 
 Function Set-TwitterProfileDescription
@@ -242,7 +249,7 @@ Function Set-TwitterProfileBanner
 
     $x = 0 
     Write-Host "Uploading Banner... " -ForegroundColor Red -BackgroundColor Black -NoNewline
-    Write-Host "Please wait..." -ForegroundColor Magenta -BackgroundColor Black
+    Write-Host "Please wait... " -ForegroundColor Magenta -BackgroundColor Black -NoNewline
     foreach ($chunk in $img) 
     {
         Invoke-TwitterAPI `
@@ -322,7 +329,7 @@ Function Set-TwitterProfileAvatar
 
     $x = 0
     Write-Host "Uploading Avatar... " -ForegroundColor Red -BackgroundColor Black -NoNewline
-    Write-Host "Please wait..." -ForegroundColor Magenta -BackgroundColor Black
+    Write-Host "Please wait... " -ForegroundColor Magenta -BackgroundColor Black -NoNewline
     foreach ($chunk in $img) 
     {
         Invoke-TwitterAPI `
