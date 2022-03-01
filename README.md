@@ -2,7 +2,7 @@ Change-TwitterProfile
 
 This PowerShell script currently updates your Twitter name, description, avatar, and banner to randomly chosen preset values every 33 seconds.
 
-This script uses some functions from the awesome PSTwitterAPI PowerShell Module: https://github.com/mkellerman/PSTwitterAPI by mkellerman (https://twitter.com/mkellerman).
+This script uses some functions from the awesome PSTwitterAPI PowerShell Module: https://github.com/mkellerman/PSTwitterAPI.
 It is unlikely that you will need to download the whole module to run this script, as I have included the functions in my script. 
 
 Figuring out how to upload the images in chunks was a pain in the ass! I need to credit MyTwitter: https://github.com/MyTwitter/MyTwitter as their way of solving this issue was an inspiration for me, and essentially helped me complete the goals of my script.
