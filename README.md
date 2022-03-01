@@ -17,5 +17,11 @@ Figuring out how to upload the images in chunks was a pain in the ass! I need to
 6) Edit text files in /text directory
 7) Put avatar images in the /images folder
 8) Put banner images in the /banner folder
-9) Run the script with PowerShell (The one bundled with Windows 10 will work, but PowerShell 6 and up will work too! Older versions of windows will require a Windows PowerShell update, or PowerShell core download). Untested on Linux and Mac. 
+9) Run the script with PowerShell 
 10) Check twitter profile 
+
+PowerShell 5.1 Required as a minimum.
+PowerShell bundled with Windows 10 will work.
+PowerShell 6 and up also work! (Untested on Linux and Mac)
+Older versions of windows will require a Windows PowerShell update (or PowerShell core download)
+My script handles running PowerShell with the correct TLS type for really old Windows versions (like Server 2012 R2, where I run my script)
