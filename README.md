@@ -21,3 +21,5 @@ Twitter Access Token Secret
 Uses some functions from the awesome PSTwitterAPI PowerShell Module: https://github.com/mkellerman/PSTwitterAPI by mkellerman (https://twitter.com/mkellerman). 
 
 Figuring out how to upload the images in chunks was a pain in the ass!
+
+![image](https://user-images.githubusercontent.com/42836083/156212947-bee7022e-9f2e-42cf-9579-4207e0e7ce39.png)
