@@ -20,4 +20,4 @@ Twitter Access Token Secret
 
 Uses some functions from the awesome PSTwitterAPI PowerShell Module: https://github.com/mkellerman/PSTwitterAPI by mkellerman (https://twitter.com/mkellerman). 
 
-Figuring out how to upload the banner images in chunks was a pain in the ass!
+Figuring out how to upload the images in chunks was a pain in the ass!
