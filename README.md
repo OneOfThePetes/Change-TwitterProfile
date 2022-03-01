@@ -11,7 +11,7 @@ Figuring out how to upload the images in chunks was a pain in the ass! I need to
 
 1) Download Zip from github https://github.com/OneOfThePetes/Change-TwitterProfile/archive/refs/heads/main.zip 
 2) Extract file on your machine
-3) Get your Twitter Developer account - You need the API Key and API Secret (get them from https://developer.twitter.com/en/portal/dashboard) 
+3) Get your Twitter Developer account - You need the API Key and API Secret (get them from https://developer.twitter.com/en/portal/dashboard, or for help: https://gprivate.com/5ygkq)
 4) You need to create a twitter app - From that you need the Access Token, and Access Token Secret
 5) Get those things, and put each in the correct file in the /creds directory
 6) Edit text files in /text directory
