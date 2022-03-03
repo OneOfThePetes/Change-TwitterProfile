@@ -1,6 +1,7 @@
 #region functions collapse
-$WinVer = (Get-WMIObject win32_operatingsystem).version
-if ([int]$WinVer.Split(".")[0] -lt 10)
+$PSVer = (Get-Host | Select-Object Version).Version 
+
+if (!($PSVer.Major -ge 6))
 {
     $TLS12Protocol = [System.Net.SecurityProtocolType] 'Ssl3 , Tls12' 
     [System.Net.ServicePointManager]::SecurityProtocol = $TLS12Protocol
@@ -209,6 +210,22 @@ Function Set-TwitterProfileDescription
 
 }
 
+Function Set-TwitterProfileLocation
+{
+    param ([string]$Location)
+    Invoke-TwitterAPI `
+    -OAuthSettings $OAuthSettings `
+    -ResourceUrl $ResourceURLs.update_profile `
+    -Method "POST" `
+    -Parameters `
+    @{
+        "location" = $Location
+    } | Out-Null
+    Write-Host "Location set to: " -ForegroundColor Yellow -BackgroundColor Black -NoNewline
+    Write-Host $Location -ForegroundColor Green -BackgroundColor Black
+
+}
+
 Function Set-TwitterProfileBanner
 {
     param ([string]$FileUrl)
@@ -372,22 +389,32 @@ Function Set-TwitterProfileAvatar
 cls
 #endregion
 
-$AvatarDirectory = ".\images"
-$BannerDirectory = ".\banners"
+#region edit these if you want
+
+$SleepTime = 30 #Twitter rate limit throttle.
+$AvatarDirectory = ".\images" #400x400
+$BannerDirectory = ".\banners" #Character limit 160
 $NamesPrefixFile = ".\text\Prefix.txt"
 $NamesSuffixFile = ".\text\Suffix.txt"
 $DescriptionFile = ".\text\Description.txt"
+$LocationFile = ".\text\Location.txt"
 
+#endregion
+
+#region loop
 while ($true) {
 
     Set-TwitterProfileName -Name "$(Get-RandomText $NamesPrefixFile) - $(Get-RandomText $NamesSuffixFile)"
     Set-TwitterProfileDescription -Description (Get-RandomText $DescriptionFile)
+    Set-TwitterProfileLocation -Location (Get-RandomText $LocationFile)
 
     Set-TwitterProfileAvatar -FileUrl (Get-RandomImage -ImageDirectory $AvatarDirectory)
     Set-TwitterProfileBanner -FileUrl (Get-RandomImage -ImageDirectory $BannerDirectory)
 
-    Write-Host "===============Waiting 33 Seconds=======================" -ForegroundColor Red -BackgroundColor Black
+    Write-Host "===============Waiting $($SleepTime) Seconds=======================" -ForegroundColor Red -BackgroundColor Black
 
-    Start-Sleep 33
+    Start-Sleep $SleepTime
 
 }
+#endregion
+
