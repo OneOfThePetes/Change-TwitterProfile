@@ -2,13 +2,6 @@ Change-TwitterProfile
 
 This PowerShell script currently updates your Twitter name, description, location, avatar, and banner to randomly chosen preset values every 30 seconds.
 
-Credits:
-
-This script uses some functions from the awesome PSTwitterAPI PowerShell Module: https://github.com/mkellerman/PSTwitterAPI.
-It is unlikely that you will need to download the whole module to run this script, as I have included the functions in my script. 
-
-Figuring out how to upload the images in chunks was a pain in the ass! I need to credit MyTwitter: https://github.com/MyTwitter/MyTwitter as their way of solving this issue was an inspiration for me, and essentially helped me complete the goals of my script.
-
 ![image](https://user-images.githubusercontent.com/42836083/156651402-c59eb588-695c-41fe-9ff3-adbe29a6a874.png)
 ![image](https://user-images.githubusercontent.com/42836083/156651480-c5b31d47-5bec-426b-b259-fcfa6043dd4d.png)
 
@@ -29,3 +22,10 @@ PowerShell bundled with Windows 10 will work.
 PowerShell 6 and up also work! (Untested on Linux and Mac)
 Older versions of windows will require a Windows PowerShell update (or PowerShell core download)
 My script handles running PowerShell with the correct TLS type for really old Windows versions (like Server 2012 R2, where I run my script)
+
+Credits:
+
+This script uses some functions from the awesome PSTwitterAPI PowerShell Module: https://github.com/mkellerman/PSTwitterAPI.
+It is unlikely that you will need to download the whole module to run this script, as I have included the functions in my script. 
+
+Figuring out how to upload the images in chunks was a pain in the ass! I need to credit MyTwitter: https://github.com/MyTwitter/MyTwitter as their way of solving this issue was an inspiration for me, and essentially helped me complete the goals of my script.
