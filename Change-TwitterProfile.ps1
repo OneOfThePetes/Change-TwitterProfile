@@ -178,6 +178,17 @@ Function Get-RandomText
     Get-Content -Path $FileLocation | Get-Random
 }
 
+Function Generate-ProfileName
+{
+    param([string]$NamesPrefixFile,[string]$NamesSuffixFile,[int]$Length)    
+    Do
+    {
+        $Name = "$(Get-RandomText $NamesPrefixFile) - $(Get-RandomText $NamesSuffixFile)"
+    }
+    Until ($Name.Length -le $Length)
+    $Name
+}
+
 Function Set-TwitterProfileName
 {
     param ([string]$Name)
@@ -391,30 +402,49 @@ cls
 
 #region edit these if you want
 
-$SleepTime = 30 #Twitter rate limit throttle.
-$AvatarDirectory = ".\images" #400x400
-$BannerDirectory = ".\banners" #Character limit 160
+#Increase this number if you get Twitter API Rate Limit warnings. 
+$RateLimit = 30 
+
+#Avatars size 400x400px
+$AvatarDirectory = ".\images"
+
+#Banners size #1500x500px
+$BannerDirectory = ".\banners"
+
+#Name max 50 characters
 $NamesPrefixFile = ".\text\Prefix.txt"
 $NamesSuffixFile = ".\text\Suffix.txt"
+
+#Description max 160 characters
 $DescriptionFile = ".\text\Description.txt"
+
+#Location max 150 characters
 $LocationFile = ".\text\Location.txt"
 
 #endregion
 
 #region loop
 while ($true) {
-
-    Set-TwitterProfileName -Name "$(Get-RandomText $NamesPrefixFile) - $(Get-RandomText $NamesSuffixFile)"
-    Set-TwitterProfileDescription -Description (Get-RandomText $DescriptionFile)
-    Set-TwitterProfileLocation -Location (Get-RandomText $LocationFile)
-
-    Set-TwitterProfileAvatar -FileUrl (Get-RandomImage -ImageDirectory $AvatarDirectory)
-    Set-TwitterProfileBanner -FileUrl (Get-RandomImage -ImageDirectory $BannerDirectory)
-
-    Write-Host "===============Waiting $($SleepTime) Seconds=======================" -ForegroundColor Red -BackgroundColor Black
-
-    Start-Sleep $SleepTime
-
+    $Time = Measure-Command `
+    {
+        #Set Profile Text Fields
+        Set-TwitterProfileName -Name "$(Generate-ProfileName -NamesPrefixFile $NamesPrefixFile -NamesSuffixFile $NamesSuffixFile -Length 50)"
+        Set-TwitterProfileDescription -Description (Get-RandomText $DescriptionFile | where {$_.Length -le 160})
+        Set-TwitterProfileLocation -Location (Get-RandomText $LocationFile | where {$_.Length -le 150})
+        
+        #Set Profile Avatar and Banner
+        Set-TwitterProfileAvatar -FileUrl (Get-RandomImage -ImageDirectory $AvatarDirectory)
+        Set-TwitterProfileBanner -FileUrl (Get-RandomImage -ImageDirectory $BannerDirectory)
+    } 
+    if ($Time.Seconds -lt $RateLimit)
+    {
+        $SleepTime = ($RateLimit - $Time.Seconds)
+        Write-Host "===============Waiting $($SleepTime) Seconds=======================" -ForegroundColor Red -BackgroundColor Black
+        Start-Sleep $SleepTime
+    }
+    else
+    {
+        Write-Host "===============Waiting 0 Seconds=======================" -ForegroundColor Red -BackgroundColor Black
+    }
 }
 #endregion
-
