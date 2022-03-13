@@ -36,4 +36,4 @@ It is unlikely that you will need to download the whole module to run this scrip
 
 Figuring out how to upload the images in chunks was a pain in the ass! I need to credit MyTwitter: https://github.com/MyTwitter/MyTwitter as their way of solving this issue was an inspiration for me, and essentially helped me complete the goals of my script.
 
-I've used some code from the awesome OutConsolePicture too!: From https://github.com/NotNotWrongUsually/OutConsolePicture
+I've used some code from the awesome OutConsolePicture too!: https://github.com/NotNotWrongUsually/OutConsolePicture
