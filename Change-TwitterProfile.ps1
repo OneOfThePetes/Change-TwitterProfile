@@ -1,10 +1,47 @@
 #region functions collapse
-$PSVer = (Get-Host | Select-Object Version).Version 
-
-if (!($PSVer.Major -ge 6))
+$ThisScript = $MyInvocation.MyCommand.Name
+if ($Host.Name -eq "Windows PowerShell ISE Host") 
 {
-    $TLS12Protocol = [System.Net.SecurityProtocolType] 'Ssl3 , Tls12' 
-    [System.Net.ServicePointManager]::SecurityProtocol = $TLS12Protocol
+    try 
+    {
+        $ErrorActionPreference = "Stop"
+        & powershell "start pwsh {.\$($ThisScript)} -WindowStyle Maximized"
+        break
+    }
+    catch
+    {
+        & powershell "start powershell {.\$($ThisScript)} -WindowStyle Maximized"
+        break
+    }
+}
+
+$PSVer = (Get-Host | Select-Object Version).Version 
+if ($PSVer.Major -ge 6)
+{
+    [int]$OSVer = ((((($PSVersionTable.os).split(" "))[$_.Count -1]).split("."))[0])     
+    if ($OSVer -le 6)
+    {
+        $MinimalOutput = $true
+    }
+    elseif ($OSVer -ge 10)
+    {
+        $MinimalOutput = $false
+    }
+}
+
+if ($PSVer.Major -lt 6)
+{
+    $WinVer = (Get-WMIObject win32_operatingsystem).version
+    if ([int]$WinVer.Split(".")[0] -le 6)
+    {
+        $TLS12Protocol = [System.Net.SecurityProtocolType] 'Ssl3 , Tls12' 
+        [System.Net.ServicePointManager]::SecurityProtocol = $TLS12Protocol
+        $MinimalOutput = $true
+    }
+    else
+    {
+        $MinimalOutput = $false
+    }     
 }
 
 $OAuthSettings = @{
@@ -397,13 +434,103 @@ Function Set-TwitterProfileAvatar
     Write-Host (($File.FullName).Split("\")[$_.count -1]) -ForegroundColor Green -BackgroundColor Black
 }
 
+Add-Type -Assembly 'System.Drawing'
+
+function GetPixelText ($color_fg, $color_bg) {
+    "$([char]27)[38;2;{0};{1};{2}m$([char]27)[48;2;{3};{4};{5}m" -f $color_fg.r, $color_fg.g, $color_fg.b, $color_bg.r, $color_bg.g, $color_bg.b + [char]9600 + "$([char]27)[0m"
+} #From https://github.com/NotNotWrongUsually/OutConsolePicture
+
+function Out-ConsolePicture {
+    [CmdletBinding()]
+    param ([Parameter(Mandatory = $true, ParameterSetName = "FromPath", Position = 0)]
+        [ValidateNotNullOrEmpty()][string[]]
+        $Path,
+
+        [Parameter(Mandatory = $true, ParameterSetName = "FromPipeline", ValueFromPipeline = $true)]
+        [System.Drawing.Bitmap[]]$InputObject,
+        
+        [Parameter()]        
+        [int]$Width,
+
+        [Parameter()]
+        [switch]$DoNotResize
+    )
+    
+    begin {
+        if ($PSCmdlet.ParameterSetName -eq "FromPath") {
+            foreach ($file in $Path) {
+                try {
+                    $image = New-Object System.Drawing.Bitmap -ArgumentList "$(Resolve-Path $file)"
+                    $InputObject += $image
+                }
+                catch {
+                    Write-Error "An error occurred while loading image. Supported formats are BMP, GIF, EXIF, JPG, PNG and TIFF."
+                }
+            }
+        }
+    }
+    
+    process {
+        $InputObject | ForEach-Object {
+            if ($_ -is [System.Drawing.Bitmap]) {
+                # Resize image to console width or width parameter
+                if ($width -or (($_.Width -gt $host.UI.RawUI.WindowSize.Width) -and -not $DoNotResize)) {
+                            if ($width) {
+                        $new_width = $width
+                    }
+                            else {
+                        $new_width = $host.UI.RawUI.WindowSize.Width
+                    }
+                    $new_height = $_.Height / ($_.Width / $new_width)
+                    $resized_image = New-Object System.Drawing.Bitmap -ArgumentList $_, $new_width, $new_height
+                    $_.Dispose()
+                    $_ = $resized_image
+                }
+                $color_string = New-Object System.Text.StringBuilder
+                for ($y = 0; $y -lt $_.Height; $y++) {
+                if ($y % 2) {
+                    continue
+                }
+                else {
+                    [void]$color_string.append("`n")
+                }
+                for ($x = 0; $x -lt $_.Width; $x++) {
+                    if (($y + 2) -gt $_.Height) {
+                            $color_fg = $_.GetPixel($x, $y)
+                            $color_bg = [System.Drawing.Color]::FromName($Host.UI.RawUI.BackgroundColor)
+                            $pixel = "$([char]27)[38;2;{0};{1};{2}m$([char]27)[48;2;{3};{4};{5}m" -f $color_fg.r, $color_fg.g, $color_fg.b, $color_bg.r, $color_bg.g, $color_bg.b + [char]9600 + "$([char]27)[0m"
+                            [void]$color_string.Append($pixel)
+                        }
+                    else {
+                            $color_fg = $_.GetPixel($x, $y)
+                            $color_bg = $_.GetPixel($x, $y + 1)
+                            $pixel = "$([char]27)[38;2;{0};{1};{2}m$([char]27)[48;2;{3};{4};{5}m" -f $color_fg.r, $color_fg.g, $color_fg.b, $color_bg.r, $color_bg.g, $color_bg.b + [char]9600 + "$([char]27)[0m"
+                            [void]$color_string.Append($pixel)
+                        }
+                }
+            }
+                $color_string.ToString()
+                $_.Dispose()
+            }
+
+        }
+    }
+    
+    end {
+    }
+} #From https://github.com/NotNotWrongUsually/OutConsolePicture
+
 cls
+
 #endregion
 
 #region edit these if you want
 
 #Increase this number if you get Twitter API Rate Limit warnings. 
 $RateLimit = 30 
+
+#Uncomment the below line to override MinimalOutput (Images in console output)
+#$MinimalOutput = $false
 
 #Avatars size 400x400px
 $AvatarDirectory = ".\images"
@@ -426,15 +553,26 @@ $LocationFile = ".\text\Location.txt"
 #region loop
 while ($true) {
     $Time = Measure-Command `
-    {
+    {     
+        #Set Profile Avatar and Banner
+        $ChosenAvatar = (Get-RandomImage -ImageDirectory $AvatarDirectory)
+        $ChosenBanner = (Get-RandomImage -ImageDirectory $BannerDirectory)
+
+        if ($MinimalOutput -eq $False)
+        {
+            Out-ConsolePicture -Path $ChosenAvatar | Out-Host
+        }
+        Set-TwitterProfileAvatar -FileUrl $ChosenAvatar
+        if ($MinimalOutput -eq $False)
+        {
+            Out-ConsolePicture -Path $ChosenBanner | Out-Host
+        }
+        Set-TwitterProfileBanner -FileUrl $ChosenBanner
+
         #Set Profile Text Fields
         Set-TwitterProfileName -Name "$(Generate-ProfileName -NamesPrefixFile $NamesPrefixFile -NamesSuffixFile $NamesSuffixFile -Length 50)"
         Set-TwitterProfileDescription -Description (Get-RandomText $DescriptionFile | where {$_.Length -le 160})
         Set-TwitterProfileLocation -Location (Get-RandomText $LocationFile | where {$_.Length -le 150})
-        
-        #Set Profile Avatar and Banner
-        Set-TwitterProfileAvatar -FileUrl (Get-RandomImage -ImageDirectory $AvatarDirectory)
-        Set-TwitterProfileBanner -FileUrl (Get-RandomImage -ImageDirectory $BannerDirectory)
     } 
     if ($Time.Seconds -lt $RateLimit)
     {
