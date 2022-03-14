@@ -50,7 +50,6 @@ $OAuthSettings = @{
   AccessToken = (Get-Content -Path ".\creds\AccessToken.txt")
   AccessTokenSecret = (Get-Content -Path ".\creds\AccessTokenSecret.txt")
 } #From https://github.com/mkellerman/PSTwitterAPI/
-Set-TwitterOAuthSettings @OAuthSettings -WarningAction SilentlyContinue
 
 $ResourceURLs = `
 @{
