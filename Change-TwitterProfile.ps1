@@ -50,6 +50,7 @@ $OAuthSettings = @{
   AccessToken = (Get-Content -Path ".\creds\AccessToken.txt")
   AccessTokenSecret = (Get-Content -Path ".\creds\AccessTokenSecret.txt")
 } #From https://github.com/mkellerman/PSTwitterAPI/
+#Set-TwitterOAuthSettings @OAuthSettings -WarningAction SilentlyContinue
 
 $ResourceURLs = `
 @{
@@ -225,20 +226,47 @@ Function Generate-ProfileName
     $Name
 }
 
+Function Generate-ScreenName
+{
+    param([string]$NamesPrefixFile,[string]$NamesSuffixFile,[int]$Length)    
+    Do
+    {
+        $Name = "$(Get-RandomText $NamesPrefixFile) - $(Get-RandomText $NamesSuffixFile)"
+    }
+    Until ($Name.Length -le $Length)
+    $Name
+}
+
 Function Set-TwitterProfileName
 {
-    param ([string]$Name)
+    param ([string]$ScreenName)
     Invoke-TwitterAPI `
     -OAuthSettings $OAuthSettings `
     -ResourceUrl $ResourceURLs.update_profile `
     -Method "POST" `
     -Parameters `
     @{
-        "name" = $Name
+        "screen_name" = $ScreenName
     } | Out-Null
 
-    Write-Host "Name set to: " -ForegroundColor Yellow -BackgroundColor Black -NoNewline
-    Write-Host $Name -ForegroundColor Green -BackgroundColor Black 
+    Write-Host "Screen Name set to: " -ForegroundColor Yellow -BackgroundColor Black -NoNewline
+    Write-Host $ScreenName -ForegroundColor Green -BackgroundColor Black 
+}
+
+Function Set-TwitterScreenName
+{
+    param ([string]$ScreenName)
+    Invoke-TwitterAPI `
+    -OAuthSettings $OAuthSettings `
+    -ResourceUrl $ResourceURLs.update_profile `
+    -Method "POST" `
+    -Parameters `
+    @{
+        "screen_name" = $ScreenName
+    } | Out-Null
+
+    Write-Host "Screen Name set to: " -ForegroundColor Yellow -BackgroundColor Black -NoNewline
+    Write-Host $ScreenName -ForegroundColor Green -BackgroundColor Black 
 }
 
 Function Set-TwitterProfileDescription
@@ -541,6 +569,9 @@ $BannerDirectory = ".\banners"
 $NamesPrefixFile = ".\text\Prefix.txt"
 $NamesSuffixFile = ".\text\Suffix.txt"
 
+#Screen Name max 15 characters
+$ScreenNameFile = ".\text\ScreenNames.txt"
+
 #Description max 160 characters
 $DescriptionFile = ".\text\Description.txt"
 
@@ -570,6 +601,7 @@ while ($true) {
 
         #Set Profile Text Fields
         Set-TwitterProfileName -Name "$(Generate-ProfileName -NamesPrefixFile $NamesPrefixFile -NamesSuffixFile $NamesSuffixFile -Length 50)"
+        Set-TwitterScreenName -ScreenName (Get-RandomText $ScreenNameFile | where {$_.Length -le 15})
         Set-TwitterProfileDescription -Description (Get-RandomText $DescriptionFile | where {$_.Length -le 160})
         Set-TwitterProfileLocation -Location (Get-RandomText $LocationFile | where {$_.Length -le 150})
     } 
