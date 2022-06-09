@@ -226,31 +226,20 @@ Function Generate-ProfileName
     $Name
 }
 
-Function Generate-ScreenName
-{
-    param([string]$NamesPrefixFile,[string]$NamesSuffixFile,[int]$Length)    
-    Do
-    {
-        $Name = "$(Get-RandomText $NamesPrefixFile) - $(Get-RandomText $NamesSuffixFile)"
-    }
-    Until ($Name.Length -le $Length)
-    $Name
-}
-
 Function Set-TwitterProfileName
 {
-    param ([string]$ScreenName)
+    param ([string]$Name)
     Invoke-TwitterAPI `
     -OAuthSettings $OAuthSettings `
     -ResourceUrl $ResourceURLs.update_profile `
     -Method "POST" `
     -Parameters `
     @{
-        "screen_name" = $ScreenName
+        "name" = $Name
     } | Out-Null
 
-    Write-Host "Screen Name set to: " -ForegroundColor Yellow -BackgroundColor Black -NoNewline
-    Write-Host $ScreenName -ForegroundColor Green -BackgroundColor Black 
+    Write-Host "Name set to: " -ForegroundColor Yellow -BackgroundColor Black -NoNewline
+    Write-Host $Name -ForegroundColor Green -BackgroundColor Black 
 }
 
 Function Set-TwitterScreenName
