@@ -12,8 +12,6 @@ Function Change-TwitterProfile
     cd $PSScriptRoot
     $ThisScript = $MyInvocation.MyCommand.Name + ".ps1"
     $ThatScript = ("$($PSScriptRoot)\$($MyInvocation.MyCommand.Name).ps1")
-    $ThatScript
-    pause
     if ($Host.Name -eq "Windows PowerShell ISE Host") 
     {
         try 
