@@ -637,7 +637,7 @@ Function Change-TwitterProfile
     }
     #endregion
 }
-
+#Unless these parameters are explicitly set to $true, they default to $false.
 Change-TwitterProfile `
     -ChangeBanner $false `
     -ChangeAvatar $false `
