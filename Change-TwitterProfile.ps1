@@ -1,12 +1,13 @@
 Function Change-TwitterProfile
 {
-    param ( [bool]$ChangeBanner = $true, 
-            [bool]$ChangeAvatar = $true, 
-            [bool]$ChangeProfileName = $true, 
-            [bool]$ChangeScreenName = $true, 
-            [bool]$ChangeDescription = $true, 
-            [bool]$ChangeLocation = $true,
-            [bool]$MinimalOutput = $false )
+    param ( [bool]$ChangeBanner = $false,
+            [bool]$ChangeAvatar = $false, 
+            [bool]$ChangeProfileName = $false, 
+            [bool]$ChangeScreenName = $false, 
+            [bool]$ChangeDescription = $false, 
+            [bool]$ChangeLocation = $false,
+            [bool]$MinimalOutput = $false,
+            [int]$RateLimit = 45 )
 
     #region functions collapse
     cd $PSScriptRoot
@@ -555,9 +556,6 @@ Function Change-TwitterProfile
 
     #region edit these if you want
 
-    #Increase this number if you get Twitter API Rate Limit warnings. 
-    $RateLimit = 60 
-
     #Avatars size 400x400px
     $AvatarDirectory = ".\images"
 
@@ -641,10 +639,11 @@ Function Change-TwitterProfile
 }
 
 Change-TwitterProfile `
-    -ChangeBanner $true `
-    -ChangeAvatar $true `
+    -ChangeBanner $false `
+    -ChangeAvatar $false `
     -ChangeProfileName $true `
-    -ChangeScreenName $true `
+    -ChangeScreenName $false `
     -ChangeDescription $true `
     -ChangeLocation $true `
-    -MinimalOutput $false
+    -MinimalOutput $true `
+    -RateLimit 60
