@@ -556,7 +556,7 @@ Function Change-TwitterProfile
     #region edit these if you want
 
     #Increase this number if you get Twitter API Rate Limit warnings. 
-    $RateLimit = 30 
+    $RateLimit = 60 
 
     #Avatars size 400x400px
     $AvatarDirectory = ".\images"
