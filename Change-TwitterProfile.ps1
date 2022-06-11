@@ -213,8 +213,18 @@ Function Change-TwitterProfile
         $RestMethod_Params['Headers'] = @{ 'Authorization' = $OAuthParameters.endpoint_authorization }
         $RestMethod_Params['ContentType'] = $OAuthParameters.endpoint_contenttype
         $RestMethod_Params['Body'] = $OAuthParameters.endpoint_body
-        Invoke-RestMethod @RestMethod_Params
-
+        
+        try{
+                Invoke-RestMethod @RestMethod_Params
+           }
+        catch
+            {
+                if ($_.Exception.Response.StatusCode.value__ -eq 429)
+                {
+                    Write-Host "===============Rate Limit Triggered! Waiting 900 Seconds=======================" -ForegroundColor Red -BackgroundColor Black
+                    Start-Sleep 900
+                }
+            }
     } #From https://github.com/mkellerman/PSTwitterAPI/
 
     Function Get-RandomImage
